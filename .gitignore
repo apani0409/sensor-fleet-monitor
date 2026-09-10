@@ -1,0 +1,8 @@
+node_modules
+dist
+.vercel
+*.local
+
+# Raw dataset (150 MB) - the pipeline regenerates artifacts from it
+analysis/labdata.txt
+analysis/labdata.txt.gz

@@ -1,0 +1,98 @@
+# Sensor Fleet Monitor
+
+Monitoring and analytics for a fleet of IoT sensor nodes: fleet map, per-node drilldown,
+data-quality accounting, anomaly detection and failure prediction.
+
+**Live:** https://sensor-fleet-monitor.vercel.app
+
+## The data is real, and that is the point
+
+54 wireless sensor nodes deployed at the
+[Intel Berkeley Research Lab](http://db.csail.mit.edu/labdata/labdata.html), reporting
+temperature, humidity, light and battery voltage roughly every 31 seconds from
+2004-02-28 to 2004-04-05 — **2,313,682 readings**.
+
+Real deployment data is broken in ways synthetic data never is:
+
+- **21.1% of readings are physically impossible.** Temperatures above 60 °C, negative
+  humidity, voltages outside what the board can produce. Not random noise — the signature
+  of nodes dying. The causes overlap, because a node with a flat battery fails several
+  measurements at once.
+- Nodes go silent permanently, at different times, as batteries drain.
+- Coverage is uneven: some nodes report for weeks, others drop out early.
+
+Invalid readings are flagged and counted but **not deleted** — they are the evidence of
+failure. They are excluded from every aggregate meant to describe the environment, so a
+dead battery never becomes a heatwave in the average.
+
+## Machine learning
+
+Trained offline in Python (pandas + scikit-learn); the site serves precomputed results,
+which is how a real dashboard works.
+
+### Failure prediction — ROC AUC 0.968
+
+Predicts whether a node goes **permanently silent within 24 hours**, using only
+information available at prediction time: current voltage and how fast it is falling.
+
+| Metric | Value |
+|---|---|
+| ROC AUC | 0.968 |
+| Average precision | 0.586 |
+| Base rate | 4.4% |
+| Lift over chance | ~13× |
+
+Logistic regression, stratified 70/30 split, class weights for the imbalance. Accuracy is
+not reported because at a 4.4% base rate it would be meaningless.
+
+### Anomaly detection
+
+Isolation Forest over the joint sensor state (temperature, humidity, light, voltage and
+deviation from the fleet). Unsupervised by necessity — the dataset carries no anomaly
+labels — so it flags unusual *combinations* that no single-variable threshold would catch.
+2.1% of node-hours flagged.
+
+### Battery-driven drift
+
+With no reference instrument, the fleet is its own reference: most nodes are healthy most
+of the time, so the median across nodes estimates the true ambient value. Median absolute
+deviation from that consensus rises from **0.63 °C on healthy batteries to 1.03 °C below
+2.4 V** — 63% higher. The correlation (−0.22) is moderate because many nodes die before
+drifting far; the jump between groups is the clearer signal.
+
+### Behavioural clustering
+
+K-means over per-node profiles (means, variability, minimum voltage, anomaly rate). Groups
+nodes by how the sensor behaves rather than where it sits — and the groups still tend to
+line up with areas of the lab.
+
+## A bug the tests caught
+
+The pipeline wrote bare `NaN` into `series.json`. That is not valid JSON: the site would
+have failed at `fetch` time in the browser, and nothing in the build would have complained.
+A test asserting the shipped artifacts parse caught it before deploy. The writer now runs
+with `allow_nan=False`, so it fails loudly at build time instead.
+
+## Stack
+
+- **Analysis:** Python, pandas, scikit-learn (`analysis/pipeline.py`)
+- **App:** React 19, TypeScript, Vite, Plotly.js
+- **Tests:** Vitest — unit tests plus regression tests over the shipped artifacts
+
+## Running it
+
+```bash
+# Fetch the raw dataset (150 MB uncompressed)
+curl -L -o analysis/labdata.txt.gz http://db.csail.mit.edu/labdata/data.txt.gz
+curl -L -o analysis/mote_locs.txt http://db.csail.mit.edu/labdata/mote_locs.txt
+gunzip analysis/labdata.txt.gz
+
+py -m pip install pandas scikit-learn
+py analysis/pipeline.py     # writes public/data/*.json
+
+bun install
+bun run dev
+bun run vitest run
+```
+
+The raw dataset is not committed — the pipeline regenerates the artifacts from it.
