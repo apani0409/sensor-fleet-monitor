@@ -1,0 +1,300 @@
+{
+  "name": "SensorFleetMonitor",
+  "compatibilityLevel": 1567,
+  "model": {
+    "culture": "es-CR",
+    "dataAccessOptions": {
+      "legacyRedirects": true,
+      "returnErrorValuesAsNull": true
+    },
+    "defaultPowerBIDataSourceVersion": "powerBI_V3",
+    "sourceQueryCulture": "es-CR",
+    "tables": [
+      {
+        "name": "Nodos",
+        "columns": [
+          { "name": "NodeId", "dataType": "int64", "sourceColumn": "NodeId", "summarizeBy": "none" },
+          { "name": "X", "dataType": "double", "sourceColumn": "X", "summarizeBy": "none" },
+          { "name": "Y", "dataType": "double", "sourceColumn": "Y", "summarizeBy": "none" },
+          { "name": "Grupo", "dataType": "int64", "sourceColumn": "Grupo", "summarizeBy": "none" },
+          {
+            "name": "Estado",
+            "dataType": "string",
+            "sourceColumn": "Estado",
+            "summarizeBy": "none",
+            "description": "Estado al final del despliegue. El estado en un momento dado se calcula con las medidas."
+          },
+          { "name": "PrimeraLectura", "dataType": "dateTime", "sourceColumn": "PrimeraLectura", "summarizeBy": "none", "formatString": "yyyy-mm-dd hh:nn" },
+          { "name": "UltimaLectura", "dataType": "dateTime", "sourceColumn": "UltimaLectura", "summarizeBy": "none", "formatString": "yyyy-mm-dd hh:nn" },
+          { "name": "HorasReportadas", "dataType": "int64", "sourceColumn": "HorasReportadas", "summarizeBy": "sum", "formatString": "#,0" },
+          { "name": "LecturasValidas", "dataType": "int64", "sourceColumn": "LecturasValidas", "summarizeBy": "sum", "formatString": "#,0" },
+          { "name": "LecturasInvalidas", "dataType": "int64", "sourceColumn": "LecturasInvalidas", "summarizeBy": "sum", "formatString": "#,0" },
+          { "name": "CoberturaPct", "dataType": "double", "sourceColumn": "CoberturaPct", "summarizeBy": "average", "formatString": "0.0\"%\"" }
+        ],
+        "partitions": [
+          {
+            "name": "Nodos",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Origen = Csv.Document(Web.Contents(\"https://raw.githubusercontent.com/apani0409/sensor-fleet-monitor/master/powerbi/data/nodos.csv\"), [Delimiter = \",\", Columns = 11, Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),",
+                "    Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars = true]),",
+                "    Tipos = Table.TransformColumnTypes(Encabezados, {{\"NodeId\", Int64.Type}, {\"X\", type number}, {\"Y\", type number}, {\"Grupo\", Int64.Type}, {\"Estado\", type text}, {\"PrimeraLectura\", type datetime}, {\"UltimaLectura\", type datetime}, {\"HorasReportadas\", Int64.Type}, {\"LecturasValidas\", Int64.Type}, {\"LecturasInvalidas\", Int64.Type}, {\"CoberturaPct\", type number}})",
+                "in",
+                "    Tipos"
+              ]
+            }
+          }
+        ],
+        "measures": [
+          {
+            "name": "Nodos en la flota",
+            "expression": "COUNTROWS ( Nodos )",
+            "formatString": "#,0"
+          },
+          {
+            "name": "Cobertura media %",
+            "expression": "AVERAGE ( Nodos[CoberturaPct] )",
+            "formatString": "0.0\"%\""
+          }
+        ]
+      },
+      {
+        "name": "Lecturas",
+        "columns": [
+          { "name": "NodeId", "dataType": "int64", "sourceColumn": "NodeId", "summarizeBy": "none" },
+          { "name": "Timestamp", "dataType": "dateTime", "sourceColumn": "Timestamp", "summarizeBy": "none", "formatString": "yyyy-mm-dd hh:nn" },
+          { "name": "Temperatura", "dataType": "double", "sourceColumn": "Temperatura", "summarizeBy": "average", "formatString": "0.00" },
+          { "name": "Humedad", "dataType": "double", "sourceColumn": "Humedad", "summarizeBy": "average", "formatString": "0.00" },
+          { "name": "Luz", "dataType": "double", "sourceColumn": "Luz", "summarizeBy": "average", "formatString": "0.0" },
+          { "name": "Voltaje", "dataType": "double", "sourceColumn": "Voltaje", "summarizeBy": "average", "formatString": "0.000" },
+          {
+            "name": "DesviacionTemp",
+            "dataType": "double",
+            "sourceColumn": "DesviacionTemp",
+            "summarizeBy": "average",
+            "formatString": "0.00",
+            "description": "Diferencia respecto a la mediana de la flota en esa misma hora. Sin instrumento de referencia, la flota es su propia referencia."
+          },
+          { "name": "Anomalia", "dataType": "int64", "sourceColumn": "Anomalia", "summarizeBy": "sum" },
+          { "name": "LecturasInvalidas", "dataType": "int64", "sourceColumn": "LecturasInvalidas", "summarizeBy": "sum", "formatString": "#,0" },
+          {
+            "name": "Fecha",
+            "dataType": "dateTime",
+            "type": "calculated",
+            "expression": "DATE ( YEAR ( Lecturas[Timestamp] ), MONTH ( Lecturas[Timestamp] ), DAY ( Lecturas[Timestamp] ) )",
+            "formatString": "yyyy-mm-dd",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "Hora",
+            "dataType": "int64",
+            "type": "calculated",
+            "expression": "HOUR ( Lecturas[Timestamp] )",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "RangoVoltaje",
+            "dataType": "string",
+            "type": "calculated",
+            "description": "Agrupación de batería para el análisis de deriva.",
+            "expression": [
+              "SWITCH (",
+              "    TRUE (),",
+              "    ISBLANK ( Lecturas[Voltaje] ), \"Sin dato\",",
+              "    Lecturas[Voltaje] < 2.2, \"< 2.2 V\",",
+              "    Lecturas[Voltaje] < 2.3, \"2.2 – 2.3 V\",",
+              "    Lecturas[Voltaje] < 2.4, \"2.3 – 2.4 V\",",
+              "    Lecturas[Voltaje] < 2.5, \"2.4 – 2.5 V\",",
+              "    Lecturas[Voltaje] < 2.6, \"2.5 – 2.6 V\",",
+              "    Lecturas[Voltaje] < 2.7, \"2.6 – 2.7 V\",",
+              "    \"≥ 2.7 V\"",
+              ")"
+            ],
+            "summarizeBy": "none"
+          },
+          {
+            "name": "BateriaCritica",
+            "dataType": "boolean",
+            "type": "calculated",
+            "description": "Bajo 2.4 V la referencia del ADC del mote colapsa y las lecturas dejan de significar algo.",
+            "expression": "NOT ISBLANK ( Lecturas[Voltaje] ) && Lecturas[Voltaje] < 2.4",
+            "summarizeBy": "none"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Lecturas",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Origen = Csv.Document(Web.Contents(\"https://raw.githubusercontent.com/apani0409/sensor-fleet-monitor/master/powerbi/data/lecturas.csv\"), [Delimiter = \",\", Columns = 9, Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),",
+                "    Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars = true]),",
+                "    Tipos = Table.TransformColumnTypes(Encabezados, {{\"NodeId\", Int64.Type}, {\"Timestamp\", type datetime}, {\"Temperatura\", type number}, {\"Humedad\", type number}, {\"Luz\", type number}, {\"Voltaje\", type number}, {\"DesviacionTemp\", type number}, {\"Anomalia\", Int64.Type}, {\"LecturasInvalidas\", Int64.Type}})",
+                "in",
+                "    Tipos"
+              ]
+            }
+          }
+        ],
+        "measures": [
+          {
+            "name": "Node-horas",
+            "expression": "COUNTROWS ( Lecturas )",
+            "formatString": "#,0"
+          },
+          {
+            "name": "Nodos transmitiendo",
+            "description": "Nodos que enviaron algo, aunque todas sus lecturas hayan salido fuera de rango.",
+            "expression": "DISTINCTCOUNT ( Lecturas[NodeId] )",
+            "formatString": "#,0"
+          },
+          {
+            "name": "Nodos midiendo bien",
+            "description": "Nodos que además produjeron mediciones utilizables: la distancia contra 'Nodos transmitiendo' es la degradación de la flota.",
+            "expression": [
+              "CALCULATE (",
+              "    DISTINCTCOUNT ( Lecturas[NodeId] ),",
+              "    NOT ISBLANK ( Lecturas[Temperatura] ),",
+              "    Lecturas[BateriaCritica] = FALSE ()",
+              ")"
+            ],
+            "formatString": "#,0"
+          },
+          {
+            "name": "Nodos degradados",
+            "expression": "[Nodos transmitiendo] - [Nodos midiendo bien]",
+            "formatString": "#,0"
+          },
+          {
+            "name": "% flota degradada",
+            "expression": "DIVIDE ( [Nodos degradados], [Nodos transmitiendo] ) * 100",
+            "formatString": "0.0\"%\""
+          },
+          {
+            "name": "Temperatura mediana flota",
+            "description": "Mediana entre nodos, robusta frente a los que están derivando.",
+            "expression": "MEDIANX ( VALUES ( Lecturas[NodeId] ), CALCULATE ( AVERAGE ( Lecturas[Temperatura] ) ) )",
+            "formatString": "0.0\"  °C\""
+          },
+          {
+            "name": "Humedad mediana flota",
+            "expression": "MEDIANX ( VALUES ( Lecturas[NodeId] ), CALCULATE ( AVERAGE ( Lecturas[Humedad] ) ) )",
+            "formatString": "0.0\"%\""
+          },
+          {
+            "name": "Voltaje promedio",
+            "expression": "AVERAGE ( Lecturas[Voltaje] )",
+            "formatString": "0.000\" V\""
+          },
+          {
+            "name": "Voltaje mínimo",
+            "expression": "MIN ( Lecturas[Voltaje] )",
+            "formatString": "0.000\" V\""
+          },
+          {
+            "name": "Desviación media absoluta",
+            "description": "Qué tan lejos se aparta el nodo del consenso de la flota. Es la medida de deriva.",
+            "expression": "AVERAGEX ( FILTER ( Lecturas, NOT ISBLANK ( Lecturas[DesviacionTemp] ) ), ABS ( Lecturas[DesviacionTemp] ) )",
+            "formatString": "0.00\"  °C\""
+          },
+          {
+            "name": "Anomalías",
+            "expression": "SUM ( Lecturas[Anomalia] )",
+            "formatString": "#,0"
+          },
+          {
+            "name": "% node-horas anómalas",
+            "expression": "DIVIDE ( [Anomalías], [Node-horas] ) * 100",
+            "formatString": "0.0\"%\""
+          },
+          {
+            "name": "Lecturas inválidas",
+            "expression": "SUM ( Lecturas[LecturasInvalidas] )",
+            "formatString": "#,0"
+          },
+          {
+            "name": "Node-horas con batería crítica",
+            "expression": "CALCULATE ( COUNTROWS ( Lecturas ), Lecturas[BateriaCritica] = TRUE () )",
+            "formatString": "#,0"
+          },
+          {
+            "name": "Deriva con batería sana",
+            "description": "Desviación mediana cuando el voltaje aún es suficiente.",
+            "expression": [
+              "MEDIANX (",
+              "    FILTER (",
+              "        Lecturas,",
+              "        NOT ISBLANK ( Lecturas[DesviacionTemp] ) && Lecturas[BateriaCritica] = FALSE ()",
+              "    ),",
+              "    ABS ( Lecturas[DesviacionTemp] )",
+              ")"
+            ],
+            "formatString": "0.00\"  °C\""
+          },
+          {
+            "name": "Deriva con batería agotada",
+            "expression": [
+              "MEDIANX (",
+              "    FILTER (",
+              "        Lecturas,",
+              "        NOT ISBLANK ( Lecturas[DesviacionTemp] ) && Lecturas[BateriaCritica] = TRUE ()",
+              "    ),",
+              "    ABS ( Lecturas[DesviacionTemp] )",
+              ")"
+            ],
+            "formatString": "0.00\"  °C\""
+          },
+          {
+            "name": "Factor de deriva",
+            "description": "Cuántas veces peor mide un nodo con la batería agotada respecto a uno sano.",
+            "expression": "DIVIDE ( [Deriva con batería agotada], [Deriva con batería sana] )",
+            "formatString": "0.00\"×\""
+          },
+          {
+            "name": "Horas sin reportar",
+            "description": "Antigüedad de la última lectura del nodo respecto a la más reciente de toda la flota.",
+            "expression": [
+              "VAR UltimaFlota = CALCULATE ( MAX ( Lecturas[Timestamp] ), ALL ( Lecturas ) )",
+              "VAR UltimaNodo = MAX ( Lecturas[Timestamp] )",
+              "RETURN",
+              "    ROUND ( ( UltimaFlota - UltimaNodo ) * 24, 0 )"
+            ],
+            "formatString": "#,0"
+          },
+          {
+            "name": "Estado del nodo",
+            "description": "Estado calculado en el contexto de fecha que esté aplicado, no un valor fijo por nodo.",
+            "expression": [
+              "VAR Silencio = [Horas sin reportar]",
+              "VAR Midiendo = [Nodos midiendo bien]",
+              "RETURN",
+              "    SWITCH (",
+              "        TRUE (),",
+              "        ISBLANK ( [Node-horas] ), \"Sin datos\",",
+              "        Silencio >= 24, \"Sin señal\",",
+              "        Midiendo = 0, \"Degradado\",",
+              "        \"Sano\"",
+              "    )"
+            ]
+          }
+        ]
+      }
+    ],
+    "relationships": [
+      {
+        "name": "Lecturas_Nodos",
+        "fromTable": "Lecturas",
+        "fromColumn": "NodeId",
+        "toTable": "Nodos",
+        "toColumn": "NodeId",
+        "crossFilteringBehavior": "bothDirections"
+      }
+    ],
+    "annotations": [{ "name": "__PBI_TimeIntelligenceEnabled", "value": "0" }]
+  }
+}

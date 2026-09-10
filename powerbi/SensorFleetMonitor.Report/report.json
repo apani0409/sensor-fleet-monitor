@@ -1,0 +1,172 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/report/1.0.0/schema.json",
+  "themeCollection": {
+    "baseTheme": {
+      "name": "CY24SU10",
+      "version": "5.55",
+      "type": 2
+    }
+  },
+  "layoutOptimization": 0,
+  "resourcePackages": [
+    {
+      "resourcePackage": {
+        "disabled": false,
+        "items": [
+          {
+            "name": "CY24SU10",
+            "path": "BaseThemes/CY24SU10.json",
+            "type": 202
+          }
+        ],
+        "name": "SharedResources",
+        "type": 2
+      }
+    }
+  ],
+  "sections": [
+    {
+      "name": "EstadoFlota",
+      "displayName": "Estado de la flota",
+      "filters": "[]",
+      "ordinal": 0,
+      "visualContainers": [
+        {
+          "x": 20,
+          "y": 20,
+          "width": 200,
+          "height": 110,
+          "z": 0,
+          "config": "{\"name\":\"kpiNodos\",\"layouts\":[{\"id\":0,\"position\":{\"x\":20,\"y\":20,\"z\":0,\"width\":200,\"height\":110}}],\"singleVisual\":{\"visualType\":\"card\",\"projections\":{\"Values\":[{\"queryRef\":\"Nodos.Nodos en la flota\"}]},\"prototypeQuery\":{\"Version\":2,\"From\":[{\"Name\":\"n\",\"Entity\":\"Nodos\",\"Type\":0}],\"Select\":[{\"Measure\":{\"Expression\":{\"SourceRef\":{\"Source\":\"n\"}},\"Property\":\"Nodos en la flota\"},\"Name\":\"Nodos.Nodos en la flota\"}]},\"drillFilterOtherVisuals\":true,\"objects\":{\"title\":[{\"properties\":{\"text\":{\"expr\":{\"Literal\":{\"Value\":\"'Nodos en la flota'\"}}},\"show\":{\"expr\":{\"Literal\":{\"Value\":\"true\"}}}}}]}}}",
+          "filters": "[]"
+        },
+        {
+          "x": 232,
+          "y": 20,
+          "width": 200,
+          "height": 110,
+          "z": 0,
+          "config": "{\"name\":\"kpiNodeHoras\",\"layouts\":[{\"id\":0,\"position\":{\"x\":232,\"y\":20,\"z\":0,\"width\":200,\"height\":110}}],\"singleVisual\":{\"visualType\":\"card\",\"projections\":{\"Values\":[{\"queryRef\":\"Lecturas.Node-horas\"}]},\"prototypeQuery\":{\"Version\":2,\"From\":[{\"Name\":\"l\",\"Entity\":\"Lecturas\",\"Type\":0}],\"Select\":[{\"Measure\":{\"Expression\":{\"SourceRef\":{\"Source\":\"l\"}},\"Property\":\"Node-horas\"},\"Name\":\"Lecturas.Node-horas\"}]},\"drillFilterOtherVisuals\":true,\"objects\":{\"title\":[{\"properties\":{\"text\":{\"expr\":{\"Literal\":{\"Value\":\"'Node-horas analizadas'\"}}},\"show\":{\"expr\":{\"Literal\":{\"Value\":\"true\"}}}}}]}}}",
+          "filters": "[]"
+        },
+        {
+          "x": 444,
+          "y": 20,
+          "width": 200,
+          "height": 110,
+          "z": 0,
+          "config": "{\"name\":\"kpiInvalidas\",\"layouts\":[{\"id\":0,\"position\":{\"x\":444,\"y\":20,\"z\":0,\"width\":200,\"height\":110}}],\"singleVisual\":{\"visualType\":\"card\",\"projections\":{\"Values\":[{\"queryRef\":\"Lecturas.Lecturas inválidas\"}]},\"prototypeQuery\":{\"Version\":2,\"From\":[{\"Name\":\"l\",\"Entity\":\"Lecturas\",\"Type\":0}],\"Select\":[{\"Measure\":{\"Expression\":{\"SourceRef\":{\"Source\":\"l\"}},\"Property\":\"Lecturas inválidas\"},\"Name\":\"Lecturas.Lecturas inválidas\"}]},\"drillFilterOtherVisuals\":true,\"objects\":{\"title\":[{\"properties\":{\"text\":{\"expr\":{\"Literal\":{\"Value\":\"'Lecturas inválidas'\"}}},\"show\":{\"expr\":{\"Literal\":{\"Value\":\"true\"}}}}}]}}}",
+          "filters": "[]"
+        },
+        {
+          "x": 656,
+          "y": 20,
+          "width": 200,
+          "height": 110,
+          "z": 0,
+          "config": "{\"name\":\"kpiDeriva\",\"layouts\":[{\"id\":0,\"position\":{\"x\":656,\"y\":20,\"z\":0,\"width\":200,\"height\":110}}],\"singleVisual\":{\"visualType\":\"card\",\"projections\":{\"Values\":[{\"queryRef\":\"Lecturas.Factor de deriva\"}]},\"prototypeQuery\":{\"Version\":2,\"From\":[{\"Name\":\"l\",\"Entity\":\"Lecturas\",\"Type\":0}],\"Select\":[{\"Measure\":{\"Expression\":{\"SourceRef\":{\"Source\":\"l\"}},\"Property\":\"Factor de deriva\"},\"Name\":\"Lecturas.Factor de deriva\"}]},\"drillFilterOtherVisuals\":true,\"objects\":{\"title\":[{\"properties\":{\"text\":{\"expr\":{\"Literal\":{\"Value\":\"'Factor de deriva por batería'\"}}},\"show\":{\"expr\":{\"Literal\":{\"Value\":\"true\"}}}}}]}}}",
+          "filters": "[]"
+        },
+        {
+          "x": 868,
+          "y": 20,
+          "width": 200,
+          "height": 110,
+          "z": 0,
+          "config": "{\"name\":\"kpiAnomalias\",\"layouts\":[{\"id\":0,\"position\":{\"x\":868,\"y\":20,\"z\":0,\"width\":200,\"height\":110}}],\"singleVisual\":{\"visualType\":\"card\",\"projections\":{\"Values\":[{\"queryRef\":\"Lecturas.% node-horas anómalas\"}]},\"prototypeQuery\":{\"Version\":2,\"From\":[{\"Name\":\"l\",\"Entity\":\"Lecturas\",\"Type\":0}],\"Select\":[{\"Measure\":{\"Expression\":{\"SourceRef\":{\"Source\":\"l\"}},\"Property\":\"% node-horas anómalas\"},\"Name\":\"Lecturas.% node-horas anómalas\"}]},\"drillFilterOtherVisuals\":true,\"objects\":{\"title\":[{\"properties\":{\"text\":{\"expr\":{\"Literal\":{\"Value\":\"'% node-horas anómalas'\"}}},\"show\":{\"expr\":{\"Literal\":{\"Value\":\"true\"}}}}}]}}}",
+          "filters": "[]"
+        },
+        {
+          "x": 20,
+          "y": 150,
+          "width": 660,
+          "height": 300,
+          "z": 0,
+          "config": "{\"name\":\"flotaEnTiempo\",\"layouts\":[{\"id\":0,\"position\":{\"x\":20,\"y\":150,\"z\":0,\"width\":660,\"height\":300}}],\"singleVisual\":{\"visualType\":\"lineChart\",\"projections\":{\"Category\":[{\"queryRef\":\"Lecturas.Fecha\"}],\"Y\":[{\"queryRef\":\"Lecturas.Nodos transmitiendo\"},{\"queryRef\":\"Lecturas.Nodos midiendo bien\"}]},\"prototypeQuery\":{\"Version\":2,\"From\":[{\"Name\":\"l\",\"Entity\":\"Lecturas\",\"Type\":0}],\"Select\":[{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"l\"}},\"Property\":\"Fecha\"},\"Name\":\"Lecturas.Fecha\"},{\"Measure\":{\"Expression\":{\"SourceRef\":{\"Source\":\"l\"}},\"Property\":\"Nodos transmitiendo\"},\"Name\":\"Lecturas.Nodos transmitiendo\"},{\"Measure\":{\"Expression\":{\"SourceRef\":{\"Source\":\"l\"}},\"Property\":\"Nodos midiendo bien\"},\"Name\":\"Lecturas.Nodos midiendo bien\"}]},\"drillFilterOtherVisuals\":true,\"objects\":{\"title\":[{\"properties\":{\"text\":{\"expr\":{\"Literal\":{\"Value\":\"'Transmitiendo vs. midiendo bien'\"}}},\"show\":{\"expr\":{\"Literal\":{\"Value\":\"true\"}}}}}]}}}",
+          "filters": "[]"
+        },
+        {
+          "x": 692,
+          "y": 150,
+          "width": 376,
+          "height": 300,
+          "z": 0,
+          "config": "{\"name\":\"derivaPorVoltaje\",\"layouts\":[{\"id\":0,\"position\":{\"x\":692,\"y\":150,\"z\":0,\"width\":376,\"height\":300}}],\"singleVisual\":{\"visualType\":\"columnChart\",\"projections\":{\"Category\":[{\"queryRef\":\"Lecturas.RangoVoltaje\"}],\"Y\":[{\"queryRef\":\"Lecturas.Desviación media absoluta\"}]},\"prototypeQuery\":{\"Version\":2,\"From\":[{\"Name\":\"l\",\"Entity\":\"Lecturas\",\"Type\":0}],\"Select\":[{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"l\"}},\"Property\":\"RangoVoltaje\"},\"Name\":\"Lecturas.RangoVoltaje\"},{\"Measure\":{\"Expression\":{\"SourceRef\":{\"Source\":\"l\"}},\"Property\":\"Desviación media absoluta\"},\"Name\":\"Lecturas.Desviación media absoluta\"}]},\"drillFilterOtherVisuals\":true,\"objects\":{\"title\":[{\"properties\":{\"text\":{\"expr\":{\"Literal\":{\"Value\":\"'Deriva media por rango de batería'\"}}},\"show\":{\"expr\":{\"Literal\":{\"Value\":\"true\"}}}}}]}}}",
+          "filters": "[]"
+        },
+        {
+          "x": 20,
+          "y": 466,
+          "width": 800,
+          "height": 240,
+          "z": 0,
+          "config": "{\"name\":\"tablaNodos\",\"layouts\":[{\"id\":0,\"position\":{\"x\":20,\"y\":466,\"z\":0,\"width\":800,\"height\":240}}],\"singleVisual\":{\"visualType\":\"tableEx\",\"projections\":{\"Values\":[{\"queryRef\":\"Nodos.NodeId\"},{\"queryRef\":\"Nodos.Estado\"},{\"queryRef\":\"Avg(Nodos.CoberturaPct)\"},{\"queryRef\":\"Lecturas.Voltaje mínimo\"},{\"queryRef\":\"Lecturas.Desviación media absoluta\"},{\"queryRef\":\"Lecturas.Anomalías\"}]},\"prototypeQuery\":{\"Version\":2,\"From\":[{\"Name\":\"n\",\"Entity\":\"Nodos\",\"Type\":0},{\"Name\":\"l\",\"Entity\":\"Lecturas\",\"Type\":0}],\"Select\":[{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"n\"}},\"Property\":\"NodeId\"},\"Name\":\"Nodos.NodeId\"},{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"n\"}},\"Property\":\"Estado\"},\"Name\":\"Nodos.Estado\"},{\"Aggregation\":{\"Expression\":{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"n\"}},\"Property\":\"CoberturaPct\"}},\"Function\":1},\"Name\":\"Avg(Nodos.CoberturaPct)\"},{\"Measure\":{\"Expression\":{\"SourceRef\":{\"Source\":\"l\"}},\"Property\":\"Voltaje mínimo\"},\"Name\":\"Lecturas.Voltaje mínimo\"},{\"Measure\":{\"Expression\":{\"SourceRef\":{\"Source\":\"l\"}},\"Property\":\"Desviación media absoluta\"},\"Name\":\"Lecturas.Desviación media absoluta\"},{\"Measure\":{\"Expression\":{\"SourceRef\":{\"Source\":\"l\"}},\"Property\":\"Anomalías\"},\"Name\":\"Lecturas.Anomalías\"}]},\"drillFilterOtherVisuals\":true,\"objects\":{\"title\":[{\"properties\":{\"text\":{\"expr\":{\"Literal\":{\"Value\":\"'Inventario de nodos'\"}}},\"show\":{\"expr\":{\"Literal\":{\"Value\":\"true\"}}}}}]}}}",
+          "filters": "[]"
+        },
+        {
+          "x": 832,
+          "y": 466,
+          "width": 236,
+          "height": 240,
+          "z": 0,
+          "config": "{\"name\":\"selectorNodo\",\"layouts\":[{\"id\":0,\"position\":{\"x\":832,\"y\":466,\"z\":0,\"width\":236,\"height\":240}}],\"singleVisual\":{\"visualType\":\"slicer\",\"projections\":{\"Values\":[{\"queryRef\":\"Nodos.NodeId\"}]},\"prototypeQuery\":{\"Version\":2,\"From\":[{\"Name\":\"n\",\"Entity\":\"Nodos\",\"Type\":0}],\"Select\":[{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"n\"}},\"Property\":\"NodeId\"},\"Name\":\"Nodos.NodeId\"}]},\"drillFilterOtherVisuals\":true,\"objects\":{\"title\":[{\"properties\":{\"text\":{\"expr\":{\"Literal\":{\"Value\":\"'Nodo'\"}}},\"show\":{\"expr\":{\"Literal\":{\"Value\":\"true\"}}}}}]}}}",
+          "filters": "[]"
+        }
+      ],
+      "config": "{}",
+      "displayOption": 1,
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "name": "CalidadDatos",
+      "displayName": "Calidad de datos",
+      "filters": "[]",
+      "ordinal": 1,
+      "visualContainers": [
+        {
+          "x": 20,
+          "y": 20,
+          "width": 660,
+          "height": 320,
+          "z": 0,
+          "config": "{\"name\":\"invalidasPorNodo\",\"layouts\":[{\"id\":0,\"position\":{\"x\":20,\"y\":20,\"z\":0,\"width\":660,\"height\":320}}],\"singleVisual\":{\"visualType\":\"columnChart\",\"projections\":{\"Category\":[{\"queryRef\":\"Nodos.NodeId\"}],\"Y\":[{\"queryRef\":\"Lecturas.Lecturas inválidas\"}]},\"prototypeQuery\":{\"Version\":2,\"From\":[{\"Name\":\"n\",\"Entity\":\"Nodos\",\"Type\":0},{\"Name\":\"l\",\"Entity\":\"Lecturas\",\"Type\":0}],\"Select\":[{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"n\"}},\"Property\":\"NodeId\"},\"Name\":\"Nodos.NodeId\"},{\"Measure\":{\"Expression\":{\"SourceRef\":{\"Source\":\"l\"}},\"Property\":\"Lecturas inválidas\"},\"Name\":\"Lecturas.Lecturas inválidas\"}]},\"drillFilterOtherVisuals\":true,\"objects\":{\"title\":[{\"properties\":{\"text\":{\"expr\":{\"Literal\":{\"Value\":\"'Lecturas inválidas por nodo'\"}}},\"show\":{\"expr\":{\"Literal\":{\"Value\":\"true\"}}}}}]}}}",
+          "filters": "[]"
+        },
+        {
+          "x": 692,
+          "y": 20,
+          "width": 376,
+          "height": 320,
+          "z": 0,
+          "config": "{\"name\":\"coberturaPorNodo\",\"layouts\":[{\"id\":0,\"position\":{\"x\":692,\"y\":20,\"z\":0,\"width\":376,\"height\":320}}],\"singleVisual\":{\"visualType\":\"columnChart\",\"projections\":{\"Category\":[{\"queryRef\":\"Nodos.NodeId\"}],\"Y\":[{\"queryRef\":\"Avg(Nodos.CoberturaPct)\"}]},\"prototypeQuery\":{\"Version\":2,\"From\":[{\"Name\":\"n\",\"Entity\":\"Nodos\",\"Type\":0}],\"Select\":[{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"n\"}},\"Property\":\"NodeId\"},\"Name\":\"Nodos.NodeId\"},{\"Aggregation\":{\"Expression\":{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"n\"}},\"Property\":\"CoberturaPct\"}},\"Function\":1},\"Name\":\"Avg(Nodos.CoberturaPct)\"}]},\"drillFilterOtherVisuals\":true,\"objects\":{\"title\":[{\"properties\":{\"text\":{\"expr\":{\"Literal\":{\"Value\":\"'Cobertura por nodo'\"}}},\"show\":{\"expr\":{\"Literal\":{\"Value\":\"true\"}}}}}]}}}",
+          "filters": "[]"
+        },
+        {
+          "x": 20,
+          "y": 356,
+          "width": 660,
+          "height": 320,
+          "z": 0,
+          "config": "{\"name\":\"voltajeVsDesviacion\",\"layouts\":[{\"id\":0,\"position\":{\"x\":20,\"y\":356,\"z\":0,\"width\":660,\"height\":320}}],\"singleVisual\":{\"visualType\":\"scatterChart\",\"projections\":{\"Category\":[{\"queryRef\":\"Nodos.NodeId\"}],\"Values\":[{\"queryRef\":\"Lecturas.Voltaje mínimo\"},{\"queryRef\":\"Lecturas.Desviación media absoluta\"}]},\"prototypeQuery\":{\"Version\":2,\"From\":[{\"Name\":\"n\",\"Entity\":\"Nodos\",\"Type\":0},{\"Name\":\"l\",\"Entity\":\"Lecturas\",\"Type\":0}],\"Select\":[{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"n\"}},\"Property\":\"NodeId\"},\"Name\":\"Nodos.NodeId\"},{\"Measure\":{\"Expression\":{\"SourceRef\":{\"Source\":\"l\"}},\"Property\":\"Voltaje mínimo\"},\"Name\":\"Lecturas.Voltaje mínimo\"},{\"Measure\":{\"Expression\":{\"SourceRef\":{\"Source\":\"l\"}},\"Property\":\"Desviación media absoluta\"},\"Name\":\"Lecturas.Desviación media absoluta\"}]},\"drillFilterOtherVisuals\":true,\"objects\":{\"title\":[{\"properties\":{\"text\":{\"expr\":{\"Literal\":{\"Value\":\"'Batería vs. deriva por nodo'\"}}},\"show\":{\"expr\":{\"Literal\":{\"Value\":\"true\"}}}}}]}}}",
+          "filters": "[]"
+        },
+        {
+          "x": 692,
+          "y": 356,
+          "width": 376,
+          "height": 320,
+          "z": 0,
+          "config": "{\"name\":\"anomaliasPorGrupo\",\"layouts\":[{\"id\":0,\"position\":{\"x\":692,\"y\":356,\"z\":0,\"width\":376,\"height\":320}}],\"singleVisual\":{\"visualType\":\"columnChart\",\"projections\":{\"Category\":[{\"queryRef\":\"Nodos.Grupo\"}],\"Y\":[{\"queryRef\":\"Lecturas.Anomalías\"}]},\"prototypeQuery\":{\"Version\":2,\"From\":[{\"Name\":\"n\",\"Entity\":\"Nodos\",\"Type\":0},{\"Name\":\"l\",\"Entity\":\"Lecturas\",\"Type\":0}],\"Select\":[{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"n\"}},\"Property\":\"Grupo\"},\"Name\":\"Nodos.Grupo\"},{\"Measure\":{\"Expression\":{\"SourceRef\":{\"Source\":\"l\"}},\"Property\":\"Anomalías\"},\"Name\":\"Lecturas.Anomalías\"}]},\"drillFilterOtherVisuals\":true,\"objects\":{\"title\":[{\"properties\":{\"text\":{\"expr\":{\"Literal\":{\"Value\":\"'Anomalías por grupo de comportamiento'\"}}},\"show\":{\"expr\":{\"Literal\":{\"Value\":\"true\"}}}}}]}}}",
+          "filters": "[]"
+        }
+      ],
+      "config": "{}",
+      "displayOption": 1,
+      "width": 1280,
+      "height": 720
+    }
+  ],
+  "config": "{\"version\":\"5.55\",\"themeCollection\":{\"baseTheme\":{\"name\":\"CY24SU10\",\"version\":\"5.55\",\"type\":2}},\"activeSectionIndex\":0,\"defaultDrillFilterOtherVisuals\":true,\"settings\":{\"useStylableVisualContainerHeader\":true}}",
+  "filters": "[]"
+}
