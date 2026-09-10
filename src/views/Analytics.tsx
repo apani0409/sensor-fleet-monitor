@@ -2,6 +2,7 @@ import Plot from "react-plotly.js";
 import { KpiCard } from "../components/KpiCard";
 import { NodeMap } from "../components/NodeMap";
 import { formatNumber } from "../data";
+import { baseConfig, layout, PALETTE } from "../chartTheme";
 import type { Dataset } from "../types";
 
 const FEATURE_LABEL: Record<string, string> = {
@@ -79,16 +80,16 @@ export function Analytics({ data, selected, onSelect }: Props) {
                 hovertemplate: "%{y}: %{x:.3f}<extra></extra>",
               },
             ]}
-            layout={{
+            layout={layout({
               autosize: true,
               height: 280,
               margin: { l: 170, r: 20, t: 10, b: 40 },
               xaxis: { title: { text: "Peso" }, zeroline: true },
               showlegend: false,
-            }}
+            })}
             useResizeHandler
             style={{ width: "100%" }}
-            config={{ displayModeBar: false }}
+            config={baseConfig}
           />
           <p className="panel-note">
             El resultado es coherente con la física del problema: cuanto más bajo el voltaje y
@@ -120,17 +121,17 @@ export function Analytics({ data, selected, onSelect }: Props) {
                 customdata: drift.curve.map((p) => p.samples),
               },
             ]}
-            layout={{
+            layout={layout({
               autosize: true,
               height: 280,
               margin: { l: 60, r: 20, t: 10, b: 50 },
               xaxis: { title: { text: "Rango de voltaje (V)" } },
               yaxis: { title: { text: "Mediana |desviación| (°C)" } },
               showlegend: false,
-            }}
+            })}
             useResizeHandler
             style={{ width: "100%" }}
-            config={{ displayModeBar: false }}
+            config={baseConfig}
           />
           <p className="panel-note">
             Correlación voltaje / |desviación|: <strong>{drift.correlation.toFixed(3)}</strong>.
@@ -161,20 +162,20 @@ export function Analytics({ data, selected, onSelect }: Props) {
                 x: data.meta.fleetHourly.hours,
                 y: data.meta.fleetHourly.anomalies,
                 type: "bar",
-                marker: { color: "#dc2626" },
+                marker: { color: PALETTE.bad },
                 hovertemplate: "%{x}<br>%{y} anomalías<extra></extra>",
               },
             ]}
-            layout={{
+            layout={layout({
               autosize: true,
               height: 260,
               margin: { l: 50, r: 20, t: 10, b: 40 },
               yaxis: { title: { text: "Anomalías por hora" } },
               showlegend: false,
-            }}
+            })}
             useResizeHandler
             style={{ width: "100%" }}
-            config={{ displayModeBar: false }}
+            config={baseConfig}
           />
         </section>
 

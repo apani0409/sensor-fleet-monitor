@@ -411,10 +411,22 @@ def main() -> None:
         for _, r in nodes.iterrows()
     ]
 
-    # Columnar layout: roughly a third the size of an array of objects.
-    ts = agg.dropna(subset=["temperature"]).copy()
-    hours = sorted(ts["hour"].unique())
+    # One canonical hour axis shared by the series and the fleet aggregates.
+    # They used to be derived separately, which meant the same integer index
+    # pointed at different hours in each — the dashboard's time control read
+    # one and the node state read the other.
+    hours = sorted(agg["hour"].unique())
     hour_index = {h: i for i, h in enumerate(hours)}
+
+    # Every node-hour where the node transmitted anything, including hours
+    # where every single reading was out of range.
+    #
+    # Dropping those made a node that is still broadcasting garbage look
+    # identical to one that had gone silent, and by late March that is most of
+    # the fleet: the batteries are failing, the radios still work. "Silent" and
+    # "faulty" are different operational problems and the dashboard has to be
+    # able to tell them apart.
+    ts = agg.copy()
     ts["hour_idx"] = ts["hour"].map(hour_index)
 
     series = {
@@ -427,6 +439,7 @@ def main() -> None:
         "voltage": col(ts["voltage"], 3),
         "tempDeviation": col(ts["temp_deviation"], 2),
         "anomaly": ts["is_anomaly"].astype(int).tolist(),
+        "invalid": ts["invalid_readings"].astype(int).tolist(),
     }
 
     fleet_hourly = (
@@ -437,8 +450,20 @@ def main() -> None:
             active_nodes=("node", "nunique"),
             anomalies=("is_anomaly", "sum"),
         )
-        .reset_index()
+        .reindex(hours)  # same axis as the series, so indices line up
+        .reset_index(names="hour")
     )
+
+    # Nodes still producing usable measurements, as opposed to merely
+    # transmitting. The gap between the two lines is the fleet degrading.
+    usable = agg[agg["temperature"].notna() & (agg["voltage"] >= VOLTAGE_CRITICAL)]
+    healthy_hourly = (
+        usable.groupby("hour")["node"].nunique().reindex(hours).fillna(0).astype(int)
+    )
+    fleet_hourly["healthy_nodes"] = healthy_hourly.values
+
+    fleet_hourly["active_nodes"] = fleet_hourly["active_nodes"].fillna(0).astype(int)
+    fleet_hourly["anomalies"] = fleet_hourly["anomalies"].fillna(0).astype(int)
 
     meta = {
         "source": {
@@ -465,10 +490,11 @@ def main() -> None:
         },
         "models": {"drift": drift, "failurePrediction": failure},
         "fleetHourly": {
-            "hours": [h.isoformat() for h in fleet_hourly["hour"]],
+            "hours": [pd.Timestamp(h).isoformat() for h in fleet_hourly["hour"]],
             "temperature": col(fleet_hourly["temperature"], 2),
             "humidity": col(fleet_hourly["humidity"], 2),
             "activeNodes": fleet_hourly["active_nodes"].astype(int).tolist(),
+            "healthyNodes": fleet_hourly["healthy_nodes"].astype(int).tolist(),
             "anomalies": fleet_hourly["anomalies"].astype(int).tolist(),
         },
     }

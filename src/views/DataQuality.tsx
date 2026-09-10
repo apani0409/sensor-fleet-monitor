@@ -2,6 +2,7 @@ import Plot from "react-plotly.js";
 import { KpiCard } from "../components/KpiCard";
 import { StatusBadge } from "../components/StatusBadge";
 import { formatNumber } from "../data";
+import { baseConfig, layout, PALETTE } from "../chartTheme";
 import type { Dataset } from "../types";
 
 export function DataQuality({ data }: { data: Dataset }) {
@@ -74,20 +75,20 @@ export function DataQuality({ data }: { data: Dataset }) {
                 x: worst.map((n) => `#${n.node}`),
                 y: worst.map((n) => n.invalidReadings),
                 type: "bar",
-                marker: { color: "#dc2626" },
+                marker: { color: PALETTE.bad },
                 hovertemplate: "Nodo %{x}<br>%{y:,} inválidas<extra></extra>",
               },
             ]}
-            layout={{
+            layout={layout({
               autosize: true,
               height: 300,
               margin: { l: 60, r: 20, t: 10, b: 40 },
               yaxis: { title: { text: "Lecturas inválidas" } },
               showlegend: false,
-            }}
+            })}
             useResizeHandler
             style={{ width: "100%" }}
-            config={{ displayModeBar: false }}
+            config={baseConfig}
           />
         </section>
 
@@ -111,16 +112,16 @@ export function DataQuality({ data }: { data: Dataset }) {
                 hovertemplate: "Nodo %{x}<br>%{y:.0f}% de cobertura<extra></extra>",
               },
             ]}
-            layout={{
+            layout={layout({
               autosize: true,
               height: 300,
               margin: { l: 60, r: 20, t: 10, b: 40 },
               yaxis: { title: { text: "Cobertura %" }, range: [0, 100] },
               showlegend: false,
-            }}
+            })}
             useResizeHandler
             style={{ width: "100%" }}
-            config={{ displayModeBar: false }}
+            config={baseConfig}
           />
         </section>
       </div>

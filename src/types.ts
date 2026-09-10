@@ -33,6 +33,7 @@ export interface Series {
   voltage: (number | null)[];
   tempDeviation: (number | null)[];
   anomaly: number[];
+  invalid: number[];
 }
 
 export interface DriftCurvePoint {
@@ -83,6 +84,7 @@ export interface Meta {
     temperature: (number | null)[];
     humidity: (number | null)[];
     activeNodes: number[];
+    healthyNodes: number[];
     anomalies: number[];
   };
 }

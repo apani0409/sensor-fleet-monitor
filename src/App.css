@@ -440,3 +440,86 @@ body {
     grid-template-columns: 1fr;
   }
 }
+
+/* --- Time scrubber ------------------------------------------------------ */
+
+.timebar {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 18px 10px;
+}
+
+.timebar-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.timebar-label {
+  font-size: 0.74rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  margin-right: 8px;
+}
+
+.timebar-value {
+  font-size: 1.05rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.timebar-hint {
+  font-size: 0.78rem;
+  color: var(--muted);
+  max-width: 46ch;
+}
+
+.timebar-range {
+  width: 100%;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+.timebar-ends {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+
+/* --- Fact row ----------------------------------------------------------- */
+
+.fact-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 14px;
+  margin-top: 6px;
+}
+
+.fact-row div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 14px;
+  background: var(--surface-2);
+  border-radius: 8px;
+}
+
+.fact-row strong {
+  font-size: 1.3rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.fact-row span {
+  font-size: 0.76rem;
+  color: var(--muted);
+}
+
+.table-scroll-sm {
+  max-height: 330px;
+  overflow-y: auto;
+}

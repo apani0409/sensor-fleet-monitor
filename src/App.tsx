@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { loadDataset } from "./data";
+import { buildSeriesIndex, defaultAsOfIdx } from "./fleetState";
 import type { Dataset } from "./types";
 import { FleetOverview } from "./views/FleetOverview";
 import { NodeDetail } from "./views/NodeDetail";
@@ -21,18 +22,28 @@ function App() {
   const [error, setError] = useState<string | null>(null);
   const [view, setView] = useState<ViewKey>("flota");
   const [selected, setSelected] = useState<number | null>(null);
+  const [asOfIdx, setAsOfIdx] = useState(0);
+
+  // Built once: scrubbing through time re-reads this instead of re-scanning
+  // all 36k node-hours on every frame.
+  const index = useMemo(
+    () => (data ? buildSeriesIndex(data.series) : null),
+    [data]
+  );
 
   useEffect(() => {
     loadDataset()
       .then((d) => {
         setData(d);
         setSelected(d.nodes[0]?.node ?? null);
+        setAsOfIdx(defaultAsOfIdx(d.meta.fleetHourly.healthyNodes));
       })
       .catch((e) => setError(String(e)));
   }, []);
 
   if (error) return <div className="boot boot-error">Error cargando los datos: {error}</div>;
-  if (!data) return <div className="boot">Cargando 2.3 millones de lecturas...</div>;
+  if (!data || !index)
+    return <div className="boot">Cargando 2.3 millones de lecturas...</div>;
 
   const selectNode = (node: number) => {
     setSelected(node);
@@ -101,7 +112,14 @@ function App() {
 
         <div className="view">
           {view === "flota" && (
-            <FleetOverview data={data} selected={selected} onSelect={selectNode} />
+            <FleetOverview
+              data={data}
+              index={index}
+              asOfIdx={asOfIdx}
+              onAsOfChange={setAsOfIdx}
+              selected={selected}
+              onSelect={selectNode}
+            />
           )}
           {view === "nodo" && selected !== null && (
             <NodeDetail data={data} selected={selected} onSelect={setSelected} />

@@ -3,6 +3,7 @@ import Plot from "react-plotly.js";
 import { KpiCard } from "../components/KpiCard";
 import { StatusBadge } from "../components/StatusBadge";
 import { formatDate, formatNumber, nodeSeries } from "../data";
+import { baseConfig, layout, PALETTE } from "../chartTheme";
 import type { Dataset } from "../types";
 
 interface Props {
@@ -99,7 +100,7 @@ export function NodeDetail({ data, selected, onSelect }: Props) {
               type: "scatter",
               mode: "lines",
               name: "Temperatura",
-              line: { color: "#2563eb", width: 1.3 },
+              line: { color: PALETTE.accent, width: 1.3 },
             },
             {
               x: anomalyPoints.map((p) => p.h),
@@ -107,20 +108,20 @@ export function NodeDetail({ data, selected, onSelect }: Props) {
               type: "scatter",
               mode: "markers",
               name: "Anomalía",
-              marker: { color: "#dc2626", size: 6, symbol: "x" },
+              marker: { color: PALETTE.bad, size: 6, symbol: "x" },
             },
           ]}
-          layout={{
+          layout={layout({
             autosize: true,
             height: 300,
             margin: { l: 50, r: 20, t: 10, b: 40 },
             yaxis: { title: { text: "°C" } },
             legend: { orientation: "h", y: -0.2 },
             hovermode: "x unified",
-          }}
+          })}
           useResizeHandler
           style={{ width: "100%" }}
-          config={{ displayModeBar: false }}
+          config={baseConfig}
         />
       </section>
 
@@ -139,10 +140,10 @@ export function NodeDetail({ data, selected, onSelect }: Props) {
                 type: "scatter",
                 mode: "lines",
                 name: "Voltaje",
-                line: { color: "#7c3aed", width: 1.5 },
+                line: { color: PALETTE.violet, width: 1.5 },
               },
             ]}
-            layout={{
+            layout={layout({
               autosize: true,
               height: 260,
               margin: { l: 50, r: 20, t: 10, b: 40 },
@@ -156,14 +157,14 @@ export function NodeDetail({ data, selected, onSelect }: Props) {
                   yref: "y",
                   y0: critical,
                   y1: critical,
-                  line: { color: "#dc2626", width: 1, dash: "dash" },
+                  line: { color: PALETTE.bad, width: 1, dash: "dash" },
                 },
               ],
               showlegend: false,
-            }}
+            })}
             useResizeHandler
             style={{ width: "100%" }}
-            config={{ displayModeBar: false }}
+            config={baseConfig}
           />
         </section>
 
@@ -181,19 +182,19 @@ export function NodeDetail({ data, selected, onSelect }: Props) {
                 type: "scatter",
                 mode: "lines",
                 name: "Desviación",
-                line: { color: "#0891b2", width: 1.3 },
+                line: { color: PALETTE.cyan, width: 1.3 },
               },
             ]}
-            layout={{
+            layout={layout({
               autosize: true,
               height: 260,
               margin: { l: 50, r: 20, t: 10, b: 40 },
               yaxis: { title: { text: "Δ °C" }, zeroline: true },
               showlegend: false,
-            }}
+            })}
             useResizeHandler
             style={{ width: "100%" }}
-            config={{ displayModeBar: false }}
+            config={baseConfig}
           />
         </section>
       </div>
